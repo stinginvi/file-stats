@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 demo.json
 report.json
+*.log
