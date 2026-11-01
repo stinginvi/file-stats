@@ -49,7 +49,7 @@ class FileStats:
 #
 # 测试代码（照抄）
 
-from basics import format_size     # 复用 Day 1 写的函数
+from utils import format_size     # 复用 Day 1 写的函数
 
 if __name__ == "__main__":
     s = FileStats(".")
