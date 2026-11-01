@@ -1,9 +1,12 @@
-# 先在 stats.py 顶部定义异常
-
 import json                     # 文件顶部导入
+import logging
 from pathlib import Path
 
 from utils import format_size     # 复用 Day 1 写的函数
+
+logger = logging.getLogger(__name__)
+
+# 先在 stats.py 顶部定义异常
 
 
 class StatsError(Exception):
@@ -37,7 +40,8 @@ class FileStats:
             try:
                 size = p.stat().st_size
             except OSError:
-                continue     # 没权限或断开的链接，跳过
+                logger.warning("跳过无法读取的文件：%s", p)     # 没权限或断开的链接，跳过
+                continue
             # by_ext 用 dict.get(key, 0) + 1 累积
             ext = p.suffix.lower() or "(无扩展名)"
             by_ext[ext] = by_ext.get(ext, 0) + 1
