@@ -12,7 +12,8 @@
 ## 环境要求
 
 - Python 3.10 及以上
-- 无第三方依赖，只用标准库
+- 运行时只用标准库
+- 运行测试需要 pytest（已写入 `requirements.txt`）
 
 ## 安装
 
@@ -27,8 +28,6 @@ source .venv/Scripts/activate     # Git Bash
 
 pip install -r requirements.txt
 ```
-
-> 如果还没有 `requirements.txt`，当前版本没有第三方依赖，可以跳过安装步骤。
 
 ## 用法
 
@@ -95,10 +94,13 @@ JSON 报告结构：
 
 ```text
 file-stats/
-├── main.py          # 命令行入口：解析参数、打印报表
+├── main.py          # 入口：串起参数解析、统计与输出
+├── cli.py           # 参数定义（argparse）与终端报表
 ├── stats.py         # FileStats：统计逻辑与 JSON 导出
 ├── utils.py         # 通用工具：format_size
+├── tests/           # pytest 测试
 ├── practice/        # 学习过程中的练习代码
+├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
@@ -119,4 +121,12 @@ file-stats/
 
 ## 测试
 
-暂无自动化测试，计划在后续版本加入 pytest 用例。
+```bash
+python -m pytest -q
+```
+
+覆盖三个场景：
+
+1. **空目录**：文件数为 0、总大小为 0、扩展名分布为空
+2. **正常目录**：文件数、总字节数、扩展名分布正确，且能递归到子目录
+3. **TopN**：返回数量不超过 N、按大小降序，N 大于文件数时不报错
