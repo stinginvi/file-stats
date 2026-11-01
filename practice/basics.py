@@ -1,11 +1,11 @@
-def average(nums):
+def average(nums: list[float]) -> float | None:
     """返回平均值；空列表返回 None。"""
     if not nums:
         return None
     return sum(nums) / len(nums)
 
 
-def filter_even(nums):
+def filter_even(nums: list[int]) -> list[int]:
     """返回偶数组成的新列表，不修改原列表。"""
     result = []
     for n in nums:
@@ -14,7 +14,7 @@ def filter_even(nums):
     return result
 
 
-def format_size(num_bytes):
+def format_size(num_bytes: int) -> str:
     """把字节数格式化为 B / KB / MB / GB / TB。"""
     units = ["B", "KB", "MB", "GB", "TB"]
     size = float(num_bytes)

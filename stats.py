@@ -29,7 +29,7 @@ class FileStats:
             if p.is_file():
                 yield p  # 遍历文件，一边生成一边返回结果
 
-    def summary(self) -> dict:
+    def summary(self, top_n: int = 5) -> dict:
         # 遍历一次文件，stat 一次，同时收集计数/总大小/扩展名/排序数据
         pairs = []          # [(相对路径, 大小), ...]
         by_ext = {}
@@ -41,15 +41,15 @@ class FileStats:
             # by_ext 用 dict.get(key, 0) + 1 累积
             ext = p.suffix.lower() or "(无扩展名)"
             by_ext[ext] = by_ext.get(ext, 0) + 1
-            pairs.append((str(p.relative_to(self.root)), size))
+            pairs.append((p.relative_to(self.root).as_posix(), size))
 
         count = len(pairs)
         total_size = sum(size for _, size in pairs)
         # 排序：pairs.sort(key=lambda x: x[1], reverse=True)，
         # lambda x: x[1] 就是"按每项的第 2 个元素（大小）排"
         pairs.sort(key=lambda x: x[1], reverse=True)
-        # 取前 N：pairs[:5]，切片自动截断，不用判断长度
-        top_files = pairs[:5]
+        # 取前 N：pairs[:top_n]，切片自动截断，不用判断长度
+        top_files = pairs[:top_n]
         return {
             "files": count,
             "total_size": total_size,
@@ -57,10 +57,10 @@ class FileStats:
             "top_files": top_files,
         }
 
-    def to_json(self, path) -> Path:
+    def to_json(self, path, top_n: int = 5) -> Path:
         """把统计结果写成 JSON 报告，返回写入的绝对路径。"""
         out = Path(path)
-        data = self.summary()      # 先算再写，避免把正在创建的报告文件算进去
+        data = self.summary(top_n=top_n)      # 先算再写，避免把正在创建的报告文件算进去
         try:
             # Path.open() 和内置 open() 用法一样，也支持 with
             with out.open("w", encoding="utf-8") as f:
